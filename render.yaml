@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: envechat-backend
+    runtime: java
+    plan: free
+    buildCommand: "./mvnw clean package"
+    startCommand: "java -jar target/backend-0.0.1-SNAPSHOT.jar"
