@@ -6,7 +6,7 @@ COPY . .
 
 RUN chmod +x mvnw
 
-RUN ./mvnw clean package -DskipTeste
+RUN ./mvnw clean package -DskipTests
 
 EXPOSE 8080
 
