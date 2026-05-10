@@ -19,15 +19,32 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
             .cors(cors -> {})
             .csrf(csrf -> csrf.disable())
+
             .authorizeHttpRequests(auth -> auth
+
+                // Allow preflight requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/", "/api/auth/**", "/ws/**").permitAll()
+
+                // Public endpoints
+                .requestMatchers(
+                        "/",
+                        "/error",
+                        "/api/auth/**",
+                        "/ws/**"
+                ).permitAll()
+
+                // Everything else requires auth
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+            .addFilterBefore(
+                    jwtAuthFilter,
+                    UsernamePasswordAuthenticationFilter.class
+            );
 
         return http.build();
     }
