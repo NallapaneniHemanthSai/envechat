@@ -1,5 +1,6 @@
 package com.envechat.backend.config;
 
+import com.envechat.backend.security.ApiAuthFailureHandlers;
 import com.envechat.backend.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final ApiAuthFailureHandlers apiAuthFailureHandlers;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -23,6 +25,11 @@ public class SecurityConfig {
         http
             .cors(cors -> {})
             .csrf(csrf -> csrf.disable())
+
+            .exceptionHandling(ex -> ex
+                    .authenticationEntryPoint(apiAuthFailureHandlers)
+                    .accessDeniedHandler(apiAuthFailureHandlers)
+            )
 
             .authorizeHttpRequests(auth -> auth
 
