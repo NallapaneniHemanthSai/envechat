@@ -35,14 +35,12 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
         // Only authenticate during CONNECT
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
 
-            String authHeader = extractAuthHeader(accessor);
+            String token = extractJwtToken(accessor);
 
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                log.warn("WebSocket CONNECT rejected: Missing/invalid Authorization header");
+            if (token == null || token.isBlank()) {
+                log.warn("WebSocket CONNECT rejected: Missing JWT (Authorization, access_token, or token)");
                 return null; // DROP frame (don’t crash handshake)
             }
-
-            String token = authHeader.substring(7);
 
             if (!jwtUtil.validateToken(token)) {
                 log.warn("WebSocket CONNECT rejected: Invalid token");
@@ -71,22 +69,49 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
     }
 
     /**
-     * Extract Authorization header safely (handles tool inconsistencies)
+     * Raw JWT from STOMP CONNECT: {@code Authorization: Bearer ...}, {@code access_token}, or {@code token}.
      */
-    private String extractAuthHeader(StompHeaderAccessor accessor) {
-
-        // Try standard header
-        List<String> authHeaders = accessor.getNativeHeader("Authorization");
-        if (authHeaders != null && !authHeaders.isEmpty()) {
-            return authHeaders.get(0);
+    private String extractJwtToken(StompHeaderAccessor accessor) {
+        String authorization = firstNativeHeader(accessor, "Authorization");
+        if (authorization != null && !authorization.isBlank()) {
+            String v = authorization.trim();
+            if (v.regionMatches(true, 0, "Bearer ", 0, 7)) {
+                return v.substring(7).trim();
+            }
+            return v;
         }
 
-        // Try lowercase (Postman/WebSocket tools sometimes use this)
-        List<String> altHeaders = accessor.getNativeHeader("authorization");
-        if (altHeaders != null && !altHeaders.isEmpty()) {
-            return altHeaders.get(0);
+        String accessToken = firstNativeHeader(accessor, "access_token");
+        if (accessToken != null && !accessToken.isBlank()) {
+            return accessToken.trim();
         }
 
+        String token = firstNativeHeader(accessor, "token");
+        if (token != null && !token.isBlank()) {
+            return token.trim();
+        }
+
+        return null;
+    }
+
+    private String firstNativeHeader(StompHeaderAccessor accessor, String name) {
+        List<String> values = accessor.getNativeHeader(name);
+        if (values != null && !values.isEmpty()) {
+            return values.get(0);
+        }
+        if (!name.isEmpty()) {
+            char c = name.charAt(0);
+            char toggled = Character.isUpperCase(c)
+                    ? Character.toLowerCase(c)
+                    : Character.toUpperCase(c);
+            if (c != toggled) {
+                String alt = toggled + name.substring(1);
+                List<String> altValues = accessor.getNativeHeader(alt);
+                if (altValues != null && !altValues.isEmpty()) {
+                    return altValues.get(0);
+                }
+            }
+        }
         return null;
     }
 }

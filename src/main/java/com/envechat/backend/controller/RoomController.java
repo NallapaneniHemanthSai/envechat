@@ -20,7 +20,7 @@ public class RoomController {
     // GET /api/rooms — list all rooms
     @GetMapping
     public List<Room> getAllRooms() {
-        return roomRepository.findAll();
+        return roomRepository.findAllWithMembersAndUsers();
     }
  
     // POST /api/rooms — create a new room
@@ -46,7 +46,7 @@ public class RoomController {
     // GET /api/rooms/{id} — get a single room
     @GetMapping("/{id}")
     public ResponseEntity<Room> getRoom(@PathVariable Long id) {
-        return roomRepository.findById(id)
+        return roomRepository.findByIdWithMembersAndUsers(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
