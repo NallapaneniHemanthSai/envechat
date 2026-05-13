@@ -45,6 +45,10 @@ public class SecurityConfig {
                         "/ws/**"
                 ).permitAll()
 
+                // Public room browse (read-only)
+                .requestMatchers(HttpMethod.GET, "/api/rooms").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/rooms/*").permitAll()
+
                 // Everything else requires auth
                 .anyRequest().authenticated()
             )

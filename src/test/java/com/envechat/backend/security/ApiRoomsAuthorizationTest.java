@@ -4,10 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -20,8 +22,23 @@ class ApiRoomsAuthorizationTest {
     private MockMvc mockMvc;
 
     @Test
-    void getRoomsWithoutTokenReturns401() throws Exception {
+    void getRoomsWithoutTokenReturns200AndJsonArray() throws Exception {
         mockMvc.perform(get("/api/rooms"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray());
+    }
+
+    @Test
+    void getRoomByIdWithoutTokenReturns404WhenMissing() throws Exception {
+        mockMvc.perform(get("/api/rooms/999999"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void postRoomsWithoutTokenReturns401() throws Exception {
+        mockMvc.perform(post("/api/rooms")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"new-room\"}"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.status").value(401))
                 .andExpect(jsonPath("$.error").value("Unauthorized"))

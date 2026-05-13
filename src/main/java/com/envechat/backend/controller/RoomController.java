@@ -1,26 +1,33 @@
 package com.envechat.backend.controller;
- 
+
+import com.envechat.backend.dto.RoomDetailDto;
+import com.envechat.backend.dto.RoomMapper;
+import com.envechat.backend.dto.RoomSummaryDto;
 import com.envechat.backend.model.Room;
 import com.envechat.backend.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
- 
+
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
- 
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/rooms")
 @RequiredArgsConstructor
 public class RoomController {
- 
+
     private final RoomRepository roomRepository;
- 
+    private final RoomMapper roomMapper;
+
     // GET /api/rooms — list all rooms
     @GetMapping
-    public List<Room> getAllRooms() {
-        return roomRepository.findAllWithMembersAndUsers();
+    public List<RoomSummaryDto> getAllRooms() {
+        return roomRepository.findAllWithMembersAndUsers().stream()
+                .map(roomMapper::toSummary)
+                .collect(Collectors.toList());
     }
  
     // POST /api/rooms — create a new room
@@ -45,8 +52,9 @@ public class RoomController {
  
     // GET /api/rooms/{id} — get a single room
     @GetMapping("/{id}")
-    public ResponseEntity<Room> getRoom(@PathVariable Long id) {
+    public ResponseEntity<RoomDetailDto> getRoom(@PathVariable Long id) {
         return roomRepository.findByIdWithMembersAndUsers(id)
+                .map(roomMapper::toDetail)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
