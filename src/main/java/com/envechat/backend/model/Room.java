@@ -1,7 +1,9 @@
 package com.envechat.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +23,8 @@ public class Room {
     @Column(length = 500)
     private String description;
 
-    @Column(name = "is_private")
-    private boolean isPrivate = false;
+    @Column(name = "is_private", nullable = false)
+    private Boolean isPrivate = false;
 
     @Column(name = "invite_code", unique = true)
     private String inviteCode;
@@ -30,9 +32,10 @@ public class Room {
     @Column(name = "created_by")
     private String createdBy;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<RoomMember> members = new ArrayList<>();
 }
