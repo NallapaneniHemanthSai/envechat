@@ -38,9 +38,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
+
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors()
-                .forEach(err -> errors.put(err.getField(), err.getDefaultMessage()));
+
+        ex.getBindingResult()
+                .getFieldErrors()
+                .forEach(err ->
+                        errors.put(err.getField(), err.getDefaultMessage())
+                );
 
         ErrorResponse response = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
@@ -55,17 +60,35 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
-        log.error("Unhandled exception", ex);
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
+
+        // IMPORTANT: print real exception in Render logs
+        ex.printStackTrace();
+
+        log.error("Unhandled exception occurred", ex);
+
+        ErrorResponse response = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error("Internal Server Error")
+                .message(ex.getMessage()) // expose actual error temporarily
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(response);
     }
 
     private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, String message) {
+
         ErrorResponse response = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(status.value())
                 .error(status.getReasonPhrase())
                 .message(message)
                 .build();
-        return ResponseEntity.status(status).body(response);
+
+        return ResponseEntity
+                .status(status)
+                .body(response);
     }
 }
