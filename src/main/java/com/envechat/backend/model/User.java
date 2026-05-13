@@ -2,6 +2,7 @@ package com.envechat.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Data
@@ -28,12 +29,12 @@ public class User {
     @Column(length = 190)
     private String bio;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "last_seen_at")
     private LocalDateTime lastSeenAt;
 
-    @Column(name = "is_online")
-    private boolean isOnline = false;
+    @Column(name = "is_online", nullable = false)
+    private Boolean isOnline = false;
 }

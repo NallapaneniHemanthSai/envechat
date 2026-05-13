@@ -2,6 +2,7 @@ package com.envechat.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Data
@@ -22,19 +23,25 @@ public class Message {
     @Column(nullable = false)
     private String roomId;
 
-    @Column(name = "sent_at")
+    @Column(name = "sent_at", nullable = false)
     private LocalDateTime sentAt = LocalDateTime.now();
 
     @Column(name = "edited_at")
     private LocalDateTime editedAt;
 
-    @Column(name = "is_deleted")
-    private boolean isDeleted = false;
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private MessageType type = MessageType.CHAT;
 
     public enum MessageType {
-        CHAT, JOIN, LEAVE, EDIT, DELETE, SYSTEM
+        CHAT,
+        JOIN,
+        LEAVE,
+        EDIT,
+        DELETE,
+        SYSTEM
     }
 }
