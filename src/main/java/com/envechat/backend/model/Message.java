@@ -13,7 +13,7 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 4000)
     private String content;
 
     @Column(nullable = false)
@@ -25,10 +25,16 @@ public class Message {
     @Column(name = "sent_at")
     private LocalDateTime sentAt = LocalDateTime.now();
 
+    @Column(name = "edited_at")
+    private LocalDateTime editedAt;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted = false;
+
     @Enumerated(EnumType.STRING)
     private MessageType type = MessageType.CHAT;
 
     public enum MessageType {
-        CHAT, JOIN, LEAVE
+        CHAT, JOIN, LEAVE, EDIT, DELETE, SYSTEM
     }
 }

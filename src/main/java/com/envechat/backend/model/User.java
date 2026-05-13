@@ -22,8 +22,17 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
+    @Column(length = 190)
+    private String bio;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "last_seen_at")
+    private LocalDateTime lastSeenAt;
 
     @Column(name = "is_online")
     private boolean isOnline = false;
