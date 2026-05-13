@@ -1,8 +1,10 @@
 package com.envechat.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Data
@@ -19,6 +21,7 @@ public class RoomMember {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id", nullable = false)
+    @JsonIgnore
     private Room room;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,7 +36,9 @@ public class RoomMember {
     private LocalDateTime joinedAt = LocalDateTime.now();
 
     public enum MemberRole {
-        OWNER, ADMIN, MEMBER
+        OWNER,
+        ADMIN,
+        MEMBER
     }
 
     public RoomMember(Room room, User user, MemberRole role) {
