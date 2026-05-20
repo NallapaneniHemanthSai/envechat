@@ -59,11 +59,15 @@ Built with modern software architecture principles, ENVECHAT ensures secure auth
 
 ## 📸 Screenshots
 
-*(Placeholder for Screenshots / GIF Demos)*
+*(Note: Please upload your screenshots to an `assets` folder in your repository with these exact names to display them here)*
 
-| Login/Signup | Chat Interface | User Status |
-| :---: | :---: | :---: |
-| <img src="https://via.placeholder.com/400x250?text=Login+Screen" width="400" /> | <img src="https://via.placeholder.com/400x250?text=Chat+Interface" width="400" /> | <img src="https://via.placeholder.com/400x250?text=User+Status" width="400" /> |
+| Home Screen | Chat Interface |
+| :---: | :---: |
+| <img src="assets/home.png" width="400" /> | <img src="assets/chat-interface.png" width="400" /> |
+
+| Login Screen | Signup Screen |
+| :---: | :---: |
+| <img src="assets/login.png" width="400" /> | <img src="assets/signup.png" width="400" /> |
 
 ---
 
@@ -201,12 +205,6 @@ Contributions are welcome! If you'd like to improve ENVECHAT, please follow thes
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
 4. Push to the branch (`git push origin feature/AmazingFeature`).
 5. Open a Pull Request.
-
----
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
