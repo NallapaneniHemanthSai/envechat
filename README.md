@@ -57,14 +57,6 @@ Built with modern software architecture principles, ENVECHAT ensures secure auth
 
 ---
 
-## 🏗️ System Architecture
-
-*(Placeholder for System Architecture Diagram - e.g., a flowchart showing client-server interaction via WebSockets and REST APIs)*
-
-> **Note:** Diagram to be added. 
-
----
-
 ## 📸 Screenshots
 
 *(Placeholder for Screenshots / GIF Demos)*
